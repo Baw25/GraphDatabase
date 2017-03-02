@@ -1,24 +1,30 @@
 
+# Movie Node class
 class MovieNode
-  attr_reader :title, :year, :actors
+  attr_reader :title, :year, :actors, :actor_count
   
   def initialize(title,year)
     @title = title 
     @year = year
     @actors = {} #hash of edges string:string
+    @actor_count = 0
   end 
   
 end
 
+#Actor node class
 class ActorNode
-  attr_reader :title, :movies
+  attr_reader :title, :movies, :movie_count
   
   def initialize(title)
     @title = title
     @movies = {} #Edges with movies
+    @movie_count = 0
   end 
 
 end
+
+#Graph class 
 
 class GraphDB
   
@@ -62,7 +68,7 @@ class GraphDB
     else
       return nil 
     end
-  end
+  end#W
   
   def add_edge(movie,actor)
     if @movies[movie] && @actors[actor]
@@ -70,7 +76,9 @@ class GraphDB
         return "Edge exists"
       else
         @movies[movie].actors[actor] = actor
+        @movies[movie].actor_count += 1
         @actors[actor].movies[movie] = movie
+        @actors[actor].movie_count += 1
         @edge_count += 1
         return "Edge was added"
       end
@@ -83,9 +91,47 @@ class GraphDB
     end
   end 
   
-  
-  
-  
+  #Count function 
+  #return # actors credited on movie 
+  #return # movies credited to actor
+  def count(ent_a)
+    if @actors[ent_a]
+      return @actors[ent_a].movie_count
+    elsif @movies[ent_a]
+      return @movies[ent_a].actor_count
+    else
+      return "NULL"
+    end 
+  end
+
+  #intersect function 
+  #2 movies --> list of all actors in both movies
+  #2 actors --> list of all movies with both actors
+  #return null if no intersection
+  #ERROR, must enter both movies or both actors
+
+  def intersect(ent_a,ent_b)
+      if @movies[ent_a] && @movies[ent_b]
+        return @movies
+      elsif @actors[ent_a] && @actors[ent_b]
+
+      elsif @actors[ent_a] || @actors[ent_b] && @movies[ent_a] || @movies[ent_b]
+        return "ERROR: BOTH ENTITIES MUST BE MOVIES OR ACTORS"
+      else
+        return "ERROR: ONE ENTITY DOESN'T EXIST"
+      end
+  end 
+
+  def calculate_bacon
+  end 
+
+  def set_epoch
+  end 
+
+  def unset_epoch
+  end 
+
+
 end
 
 
