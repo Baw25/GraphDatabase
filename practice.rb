@@ -1,8 +1,8 @@
 
 # Movie Node class
 class MovieNode
-  attr_reader :title, :year, :actors, :actor_count, :bacon_num
-  
+  attr_reader :title, :year, :bacon_num
+  attr_accessor :actors, :actor_count
   def initialize(title,year)
     @title = title 
     @year = year.to_i
@@ -15,7 +15,8 @@ end
 
 #Actor node class
 class ActorNode
-  attr_reader :title, :movies, :movie_count, :bacon_num
+  attr_accessor :movies,:movie_count
+  attr_reader :title, :bacon_num
   
   def initialize(title)
     @title = title
@@ -32,7 +33,7 @@ class YearNode
 
   def initialize(year)
     @year = year
-    @movies = {}
+    @movies = {} #edges directed at movie nodes
     @movie_count = 0
   end 
   
@@ -41,7 +42,7 @@ end
 #Graph class 
 
 class GraphDB
-  attr_reader :actors, :movies, :years, :epoch_on
+  attr_accessor :actors, :movies, :years, :epoch_on, :temp_movie_store
   
   def initialize
     @actors = {} #hash of actor_title: actor_node
@@ -52,9 +53,21 @@ class GraphDB
     @movie_count = 0 
     @actor_count = 0
     @year_count = 0
-    @edge_count = 0
+    # @edge_count = 0
   end
-  
+
+  #call this method as you read the data line by line 
+  #takes an array of actors
+  def add_movie_data(movie_title,year,actors)
+    add_movie_node(movie_title,year)
+    actors.each do |actor| 
+      add_actor_node(actor,movie_title)
+      @actors[actor].movies[movie_title] = movie_title
+      @movies[movie_title].actors[actor] = actor
+      @movies[movie_title].actor_count += 1
+    end
+  end
+
   def add_movie_node(title,year)
     if !@movies[title]
       movie_node = MovieNode.new(title,year.to_i)
@@ -64,11 +77,16 @@ class GraphDB
     end
   end
   
-  def add_actor_node(title)
+  def add_actor_node(title,movie_title)
     if !@actors[title]
       actor_node = ActorNode.new(title)
+      actor_node.movies[movie_title] = movie_title
+      actor_node.movie_count += 1
       @actors[title]= actor_node
       @actor_count += 1
+    else
+      @actors[title].movies[movie_title] = movie_title
+      @actors[title].movie_count += 1
     end
   end
 
@@ -79,50 +97,53 @@ class GraphDB
       year_node.movie_count += 1
       @years[year.to_i]= year_node
       @year_count += 1
+    else
+      @years[year.to_i].movies[movie_title] = movie_title
+      @year[year.to_i].movie_count += 1
     end
   end
   
-  def get_actor(title)
-    if @actors[title]
-      return @actors[title]
-    else
-      return nil 
-    end
-  end
+  # def get_actor(title)
+  #   if @actors[title]
+  #     return @actors[title]
+  #   else
+  #     return nil 
+  #   end
+  # end
   
-  def get_movie(title)
-    if @movies[title]
-      return @movies[title]
-    else
-      return nil 
-    end
-  end
+  # def get_movie(title)
+  #   if @movies[title]
+  #     return @movies[title]
+  #   else
+  #     return nil 
+  #   end
+  # end
   
-  def add_edges(movie,actor,year)
-    year = year.to_i
-    if @movies[movie] && @actors[actor] && @years[year]
-      if @movies[movie].actors[actor] && @actors[actor].movies[movie] && @years[year].movies[movie]
-        return "Edges exists"
-      else
-        @movies[movie].actors[actor] = actor
-        @movies[movie].actor_count += 1
-        @actors[actor].movies[movie] = movie
-        @actors[actor].movie_count += 
-        @years[year].movies[movie] = movie
-        @years[year].movies[movie] += 1
-        @edge_count += 2
-        return "Edges were added"
-      end
-    else
-      if @movies[movie]
-        return "#{actor} does not exist"
-      elsif @actors[actor]
-        return "#{movie} does not exist"
-      else
-        return "#{year} does not exist"
-      end
-    end
-  end 
+  # def add_edges(movie,actor,year)
+  #   year = year.to_i
+  #   if @movies[movie] && @actors[actor] && @years[year]
+  #     if @movies[movie].actors[actor] && @actors[actor].movies[movie] && @years[year].movies[movie]
+  #       return "Edges exists"
+  #     else
+  #       @movies[movie].actors[actor] = actor
+  #       @movies[movie].actor_count += 1
+  #       @actors[actor].movies[movie] = movie
+  #       @actors[actor].movie_count += 
+  #       @years[year].movies[movie] = movie
+  #       @years[year].movies[movie] += 1
+  #       @edge_count += 2
+  #       return "Edges were added"
+  #     end
+  #   else
+  #     if @movies[movie]
+  #       return "#{actor} does not exist"
+  #     elsif @actors[actor]
+  #       return "#{movie} does not exist"
+  #     else
+  #       return "#{year} does not exist"
+  #     end
+  #   end
+  # end 
   
   #Count function 
   #return # actors credited on movie 
@@ -130,9 +151,9 @@ class GraphDB
 
   def count(ent_a)
     if @actors[ent_a]
-      return @actors[ent_a].movie_count
+      return "#{@actors[ent_a].movie_count} movie(s) credited"
     elsif @movies[ent_a]
-      return @movies[ent_a].actor_count
+      return "#{@movies[ent_a].actor_count} actor(s) credited"
     else
       return "NULL"
     end 
@@ -150,7 +171,7 @@ class GraphDB
     elsif @actors[ent_a] && @actors[ent_b]
       puts find_intersections(ent_a,ent_b,"actors")
     elsif @actors[ent_a] || @actors[ent_b] && @movies[ent_a] || @movies[ent_b]
-      return "ERROR: BOTH ENTITIES MUST BE MOVIES OR ACTORS"
+      return "ERROR: BOTH ENTITIES MUST BE MOVIES OR ACTORS, OR ATLEAST 1 ENTITY DOESN'T EXIST"
     else
       return "ERROR: ONE ENTITY DOESN'T EXIST"
     end
@@ -180,7 +201,7 @@ class GraphDB
   #should I filter by yearnode or by year attribute in movie 
   def set_epoch(start_yr,end_yr)
   
-    if start_yr > end_yr
+    if start_yr.to_i > end_yr.to_i
       return "ERROR: START YEAR MUST BE GREATER"
     elsif start_yr == "NULL" 
       beginning = @years.keys.min 
@@ -188,24 +209,27 @@ class GraphDB
     elsif end_yr == "NULL"
       beginning = start_yr.to_i
       ending = @years.keys.max
+    else
+      beginning = start_yr.to_i
+      ending = end_yr.to_i
     end
 
     filtered_movies = {}
     temp = @movies
-    @temp_movie_store = temp
+    self.temp_movie_store = temp
     (beginning..ending).each do |year| 
-      filtered_movies.merge(@years[year].movies) if @years[year]
+      filtered_movies.merge!(@years[year].movies) if @years[year]
     end
-    @movies = filtered_movies
-    @epoch_on = true
+    self.movies = filtered_movies
+    self.epoch_on = true
   end 
 
 
   def unset_epoch
     total_movies = @temp_movie_store
-    @movies = total_movies
-    @temp_movie_store = nil
-    @epoch_on = false
+    self.movies = total_movies
+    self.temp_movie_store = nil
+    self.epoch_on = false
   end 
 
   private
@@ -213,13 +237,17 @@ class GraphDB
   #Linear operation dependent on the # actors for one of the movies
   def find_intersections(ent_a,ent_b,type)
     intersections = []
-    if type == "movies"
+    if type == "movies" && !@epoch_on
       @movies[ent_a].actors.each do |key,value|
         intersections.push(key) if @movies[ent_b].actors[key]
       end
+    elsif type == "movies" && @epoch_on
+      @temp_movie_store[ent_a].actors.each do |key,value|
+        intersections.push(key) if @temp_movie_store[ent_b].actors[key]
+      end
     else
       @actors[ent_a].movies.each do |key,value|
-        intersections.push(key) if @actors[ent_b].movies[key]
+        intersections.push(key) if @actors[ent_b].movies[key] && @movies[key]
       end
     end
     return intersections.length > 0 ? intersections : nil 
@@ -236,21 +264,3 @@ class GraphDB
 
 end
 
-
-
-#This is going to be the join Node for actors and movies
-
-# class YearNode
-#   attr_reader :year, :movies
-#   def initialize(year,movies,actors)
-#     @year = year
-#     @movies = []
-#   end 
-  
-#   def add_movie(movie)
-#     if !@movies.include? movie
-#       @movies.push(movie)
-#     end
-#   end
-  
-# end
