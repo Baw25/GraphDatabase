@@ -94,6 +94,7 @@ class GraphDB
   #Count function 
   #return # actors credited on movie 
   #return # movies credited to actor
+
   def count(ent_a)
     if @actors[ent_a]
       return @actors[ent_a].movie_count
@@ -111,15 +112,15 @@ class GraphDB
   #ERROR, must enter both movies or both actors
 
   def intersect(ent_a,ent_b)
-      if @movies[ent_a] && @movies[ent_b]
-        return @movies
-      elsif @actors[ent_a] && @actors[ent_b]
-
-      elsif @actors[ent_a] || @actors[ent_b] && @movies[ent_a] || @movies[ent_b]
-        return "ERROR: BOTH ENTITIES MUST BE MOVIES OR ACTORS"
-      else
-        return "ERROR: ONE ENTITY DOESN'T EXIST"
-      end
+    if @movies[ent_a] && @movies[ent_b]
+      return find_intersections(ent_a,ent_b,"movies")
+    elsif @actors[ent_a] && @actors[ent_b]
+      return find_intersections(ent_a,ent_b,"actors")
+    elsif @actors[ent_a] || @actors[ent_b] && @movies[ent_a] || @movies[ent_b]
+      return "ERROR: BOTH ENTITIES MUST BE MOVIES OR ACTORS"
+    else
+      return "ERROR: ONE ENTITY DOESN'T EXIST"
+    end
   end 
 
   def calculate_bacon
@@ -130,6 +131,23 @@ class GraphDB
 
   def unset_epoch
   end 
+
+  private
+
+  #Linear operation dependent on the # actors for one of the movies
+  def find_intersections(ent_a,ent_b,type)
+    intersections = []
+    if type == "movies"
+      @movies[ent_a].actors.each do |key,value|
+        intersections.push(key) if @movies[ent_b].actors[key]
+      end
+    else
+      @actors[ent_a].movies.each do |key,value|
+        intersections.push(key) if @actors[ent_b].movies[key]
+      end
+    end
+    return intersections.length > 0 ? intersections : nil 
+  end
 
 
 end
