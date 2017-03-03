@@ -27,9 +27,10 @@ class ActorNode
 end
 
 class YearNode
-  attr_reader :year, :movies, :movie_count
+  attr_reader :year
+  attr_accessor :movies, :movie_count
 
-  def initialize(year,movies)
+  def initialize(year)
     @year = year
     @movies = {}
     @movie_count = 0
@@ -40,14 +41,14 @@ end
 #Graph class 
 
 class GraphDB
-  attr_reader :actors, :movies, :movie_count, :actor_count
+  attr_reader :actors, :movies, :years, :epoch_on
   
   def initialize
     @actors = {} #hash of actor_title: actor_node
     @movies = {} #hash of movie_title: movie_node
     @years = {} #hash of year: year_node 
     @temp_movie_store = nil 
-    @epoch_on? = false
+    @epoch_on = false
     @movie_count = 0 
     @actor_count = 0
     @year_count = 0
@@ -56,10 +57,10 @@ class GraphDB
   
   def add_movie_node(title,year)
     if !@movies[title]
-      movie_node = MovieNode.new(title,year)
+      movie_node = MovieNode.new(title,year.to_i)
       @movies[title]= movie_node
       @movie_count += 1
-      add_year_node(year)
+      add_year_node(year,title)
     end
   end
   
@@ -71,9 +72,11 @@ class GraphDB
     end
   end
 
-  def add_year_node(year)
+  def add_year_node(year,movie_title)
     if !@years[year.to_i]
-      year_node = YearNode.new(year)
+      year_node = YearNode.new(year.to_i)
+      year_node.movies[movie_title] = movie_title
+      year_node.movie_count += 1
       @years[year.to_i]= year_node
       @year_count += 1
     end
@@ -194,7 +197,7 @@ class GraphDB
       filtered_movies.merge(@years[year].movies) if @years[year]
     end
     @movies = filtered_movies
-    @epoch_on? = true
+    @epoch_on = true
   end 
 
 
@@ -202,7 +205,7 @@ class GraphDB
     total_movies = @temp_movie_store
     @movies = total_movies
     @temp_movie_store = nil
-    @epoch_on? = false
+    @epoch_on = false
   end 
 
   private
