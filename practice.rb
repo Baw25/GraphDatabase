@@ -1,35 +1,44 @@
+#Relationships between the graph nodes: 
+
+#Movie node has many actor nodes 
+#Movie node has only one year node 
+#Actor node has many movie nodes
+#Actor node will have many year nodes through the movie nodes
+#Year node has many movie nodes 
+#Year node has many actor nodes through movies
 
 # Movie Node class
 class MovieNode
-  attr_reader :title, :year, :bacon_num
-  attr_accessor :actors, :actor_count
+  attr_accessor :actors, :actor_count,:bacon_num
+  attr_reader :title, :year
+
   def initialize(title,year)
     @title = title 
-    @year = year.to_i
-    @actors = {} #hash of edges string:string
-    @actor_count = 0
-    @bacon_num = nil
+    @year = year.to_i #belongs to specific year node
+    @actors = {} #Edges with actor nodes or actors belonging to movie
+    @actor_count = 0 #Count of actors
+    @bacon_num = nil #Associated bacon number
   end 
   
 end
 
 #Actor node class
 class ActorNode
-  attr_accessor :movies,:movie_count
-  attr_reader :title, :bacon_num
+  attr_accessor :movies,:movie_count, :bacon_num
+  attr_reader :title
   
   def initialize(title)
-    @title = title
-    @movies = {} #Edges with movies
-    @movie_count = 0
-    @bacon_num = nil
+    @title = title 
+    @movies = {} #Edges with movie nodes or actor's movies
+    @movie_count = 0 #movie count
+    @bacon_num = nil #Associated bacon number
   end 
 
 end
 
 class YearNode
-  attr_reader :year
   attr_accessor :movies, :movie_count
+  attr_reader :year
 
   def initialize(year)
     @year = year
@@ -45,11 +54,11 @@ class GraphDB
   attr_accessor :actors, :movies, :years, :epoch_on, :temp_movie_store
   
   def initialize
-    @actors = {} #hash of actor_title: actor_node
-    @movies = {} #hash of movie_title: movie_node
-    @years = {} #hash of year: year_node 
-    @temp_movie_store = nil 
-    @epoch_on = false
+    @actors = {} #collection of actor nodes
+    @movies = {} #collection of movie nodes
+    @years = {} #collection of year nodes
+    @temp_movie_store = nil #temp store movie store for epoch fx
+    @epoch_on = false #state of epoch function 
     @movie_count = 0 
     @actor_count = 0
     @year_count = 0
@@ -144,16 +153,24 @@ class GraphDB
   #     end
   #   end
   # end 
-  
+
   #Count function 
   #return # actors credited on movie 
   #return # movies credited to actor
 
   def count(ent_a)
     if @actors[ent_a]
-      return "#{@actors[ent_a].movie_count} movie(s) credited"
+      if !epoch_on
+        return "#{@actors[ent_a].movie_count} movie(s) credited"
+      else
+        return "#{@actors[ent_a].movies.keys.count { |x| @movies.keys.include?(x) } } movie(s) credited"
+      end
     elsif @movies[ent_a]
-      return "#{@movies[ent_a].actor_count} actor(s) credited"
+      if !epoch_on
+        return "#{@movies[ent_a].actor_count} actor(s) credited"
+      else 
+        return "#{@temp_movie_store[ent_a].actor_count} actor(s) credited"        
+      end
     else
       return "NULL"
     end 
@@ -167,9 +184,9 @@ class GraphDB
 
   def intersect(ent_a,ent_b)
     if @movies[ent_a] && @movies[ent_b]
-      puts find_intersections(ent_a,ent_b,"movies")
+      return find_intersections(ent_a,ent_b,"movies")
     elsif @actors[ent_a] && @actors[ent_b]
-      puts find_intersections(ent_a,ent_b,"actors")
+      return find_intersections(ent_a,ent_b,"actors")
     elsif @actors[ent_a] || @actors[ent_b] && @movies[ent_a] || @movies[ent_b]
       return "ERROR: BOTH ENTITIES MUST BE MOVIES OR ACTORS, OR ATLEAST 1 ENTITY DOESN'T EXIST"
     else
@@ -250,7 +267,7 @@ class GraphDB
         intersections.push(key) if @actors[ent_b].movies[key] && @movies[key]
       end
     end
-    return intersections.length > 0 ? intersections : nil 
+    puts intersections.length > 0 ? intersections : "NULL" 
   end
 
   # def calculate_bacon(entity,entity_type)

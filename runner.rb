@@ -18,23 +18,33 @@ CSV.foreach('data.csv', { :col_sep => '/' }) do |row|
   graph.add_movie_data(movie_title,year,actors)
 end
 
-
-# p "$" * 20
-
-# p graph.movies
-# p "$" * 20
-# p graph.actors
-# p "$" * 20
-# p graph.years
-
+# Tests for count function (make below past)
+# It returns the actor count for a movie
 # p graph.count("...Almost")
-# p graph.intersect("Myers, Mike","Green, Seth")
-# p "$" * 20
-# p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
+# it returns the movie count for the actor 
+# p graph.count("Ferrell, Will")
+# it returns NULL if actor doesn't exist
+# it returns NULL if actor doesn't exist
+# p graph.count("Washington, Denzel")
+# it returns the epoch count 
+# p graph.count("Austin Powers: The Spy Who Shagged Me")
+# graph.set_epoch("1997","1999")
+# graph.epoch_on
+# p graph.count("Austin Powers: The Spy Who Shagged Me")
 
+
+# Tests for count function (make below past)
+#it finds the intersections between 2 actors
+# p graph.intersect("Myers, Mike","Green, Seth")
+#it finds the intersections between 2 movies
+# p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
+#it returns NULL when no intersections  
+# p graph.intersect("Green, Seth", "Giron, Ali")
+#it returns error explaination when not both actors or both movies
+# p graph.intersect("Green, Seth", "Cry in the Night, A")
 
 #Set epoch for actors
-
+#it returns 
 # p graph.epoch_on
 # p graph.intersect("Myers, Mike","Green, Seth")
 # p "$" * 20
@@ -49,15 +59,15 @@ end
 # p graph.intersect("Myers, Mike","Green, Seth")
 
 #Set epoch for movies
-p graph.epoch_on
-p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
-p "$" * 20
-graph.set_epoch("1997","1999")
-p graph.epoch_on
-p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
-graph.unset_epoch
-p graph.epoch_on
-p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
+# p graph.epoch_on
+# p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
+# p "$" * 20
+# graph.set_epoch("1997","1999")
+# p graph.epoch_on
+# p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
+# graph.unset_epoch
+# p graph.epoch_on
+# p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
 
 
 
