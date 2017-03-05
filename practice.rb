@@ -67,6 +67,7 @@ class GraphDB
 
   #call this method as you read the data line by line 
   #takes an array of actors
+  
   def add_movie_data(movie_title,year,actors)
     add_movie_node(movie_title,year)
     actors.each do |actor| 
@@ -111,49 +112,7 @@ class GraphDB
       @year[year.to_i].movie_count += 1
     end
   end
-  
-  # def get_actor(title)
-  #   if @actors[title]
-  #     return @actors[title]
-  #   else
-  #     return nil 
-  #   end
-  # end
-  
-  # def get_movie(title)
-  #   if @movies[title]
-  #     return @movies[title]
-  #   else
-  #     return nil 
-  #   end
-  # end
-  
-  # def add_edges(movie,actor,year)
-  #   year = year.to_i
-  #   if @movies[movie] && @actors[actor] && @years[year]
-  #     if @movies[movie].actors[actor] && @actors[actor].movies[movie] && @years[year].movies[movie]
-  #       return "Edges exists"
-  #     else
-  #       @movies[movie].actors[actor] = actor
-  #       @movies[movie].actor_count += 1
-  #       @actors[actor].movies[movie] = movie
-  #       @actors[actor].movie_count += 
-  #       @years[year].movies[movie] = movie
-  #       @years[year].movies[movie] += 1
-  #       @edge_count += 2
-  #       return "Edges were added"
-  #     end
-  #   else
-  #     if @movies[movie]
-  #       return "#{actor} does not exist"
-  #     elsif @actors[actor]
-  #       return "#{movie} does not exist"
-  #     else
-  #       return "#{year} does not exist"
-  #     end
-  #   end
-  # end 
-
+ 
   #Count function 
   #return # actors credited on movie 
   #return # movies credited to actor
@@ -203,19 +162,20 @@ class GraphDB
   #if movie, return lowest bacon # of all actors or 
   #INF if all actors in the film have INF
 
-  # def get_bacon_num(entity)
-  #   if @movies[entity]
-  #     return calculate_bacon(entity,"movies")
-  #   elsif @actors[entity]
-  #     return calculate_bacon(entity,"actors")
-  #   else
-  #     return "ERROR: INVALID INPUT"
-  #   end
-  # end 
+  def get_bacon_num(entity)
+    if @movies[entity]
+      return calculate_bacon(entity,"movies")
+    elsif @actors[entity]
+      return calculate_bacon(entity,"actors")
+    else
+      return "ERROR: INVALID INPUT"
+    end
+  end 
 
 
   #filter for movie years including start and end years
   #should I filter by yearnode or by year attribute in movie 
+
   def set_epoch(start_yr,end_yr)
   
     if start_yr.to_i > end_yr.to_i
