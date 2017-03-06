@@ -7,52 +7,15 @@
 #Year node has many movie nodes 
 #Year node has many actor nodes through movies
 
-# Movie Node class
-class MovieNode
-  attr_accessor :actors, :actor_count,:bacon_num
-  attr_reader :title, :year
-
-  def initialize(title,year)
-    @title = title 
-    @year = year.to_i #belongs to specific year node
-    @actors = {} #Edges with actor nodes or actors belonging to movie
-    @actor_count = 0 #Count of actors
-    @bacon_num = nil #Associated bacon number
-  end 
-  
-end
-
-#Actor node class
-class ActorNode
-  attr_accessor :movies,:movie_count, :bacon_num
-  attr_reader :title
-  
-  def initialize(title)
-    @title = title 
-    @movies = {} #Edges with movie nodes or actor's movies
-    @movie_count = 0 #movie count
-    @bacon_num = nil #Associated bacon number
-  end 
-
-end
-
-class YearNode
-  attr_accessor :movies, :movie_count
-  attr_reader :year
-
-  def initialize(year)
-    @year = year
-    @movies = {} #edges directed at movie nodes
-    @movie_count = 0
-  end 
-  
-end
+require_relative "./movie_node"
+require_relative "./actor_node"
+require_relative "./year_node"
 
 #Graph class 
 
 class GraphDB
   attr_accessor :actors, :movies, :years, :epoch_on, :temp_movie_store
-  
+  attr_reader :movie_count, :actor_count, :year_count
   def initialize
     @actors = {} #collection of actor nodes
     @movies = {} #collection of movie nodes
@@ -67,7 +30,7 @@ class GraphDB
 
   #call this method as you read the data line by line 
   #takes an array of actors
-  
+
   def add_movie_data(movie_title,year,actors)
     add_movie_node(movie_title,year)
     actors.each do |actor| 
@@ -162,11 +125,13 @@ class GraphDB
   #if movie, return lowest bacon # of all actors or 
   #INF if all actors in the film have INF
 
-  def get_bacon_num(entity)
+  def bacon(entity)
     if @movies[entity]
-      return calculate_bacon(entity,"movies")
+      # return calculate_bacon(entity,"movies")
+      return @movies[entity].bacon_num
     elsif @actors[entity]
-      return calculate_bacon(entity,"actors")
+      # return calculate_bacon(entity,"actors")
+      return @actors[entity].bacon_num
     else
       return "ERROR: INVALID INPUT"
     end
@@ -228,13 +193,19 @@ class GraphDB
       end
     end
     puts intersections.length > 0 ? intersections : "NULL" 
+    return intersections.length > 0 ? intersections : "NULL" 
   end
 
   # def calculate_bacon(entity,entity_type)
   #   if entity_type == "movies"
 
   #   else
+  #     if @actors[entity].title == "Bacon, Kevin"
+  #       @actors[entity].bacon_num = 0
+  #     elsif 
+  #       @actors
 
+        
   #   end
   # end
 
