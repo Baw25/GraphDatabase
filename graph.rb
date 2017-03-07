@@ -72,7 +72,7 @@ class GraphDB
       @year_count += 1
     else
       @years[year.to_i].movies[movie_title] = movie_title
-      @year[year.to_i].movie_count += 1
+      @years[year.to_i].movie_count += 1
     end
   end
  
@@ -125,18 +125,28 @@ class GraphDB
   #if movie, return lowest bacon # of all actors or 
   #INF if all actors in the film have INF
 
-  def bacon(entity)
-    if @movies[entity]
-      # return calculate_bacon(entity,"movies")
-      return @movies[entity].bacon_num
-    elsif @actors[entity]
-      # return calculate_bacon(entity,"actors")
-      return @actors[entity].bacon_num
-    else
-      return "ERROR: INVALID INPUT"
+ def bacon(entity)
+  #base cases
+    if entity == "Bacon, Kevin" 
+      return "Bacon number: 0"
     end
-  end 
 
+    if !@epoch_on
+      if @movies[entity] && @movies[entity].actors["Bacon, Kevin"]
+        return "Bacon number: 0"
+      end
+      return calculate_bacon(entity)
+    else 
+      if !@movies[entity] && !@actors[entity]
+        return "Movie doesn't exist in year range" 
+      elsif @movies[entity] && @temp_movie_store[entity].actors["Bacon, Kevin"]
+        return "Bacon number: 0"
+      else
+        return calculate_bacon(entity)
+      end
+    end
+
+  end
 
   #filter for movie years including start and end years
   #should I filter by yearnode or by year attribute in movie 
@@ -194,6 +204,60 @@ class GraphDB
     end
     puts intersections.length > 0 ? intersections : "NULL" 
     return intersections.length > 0 ? intersections : "NULL" 
+  end
+
+  def calculate_bacon(entity)
+    visited = {}
+    distances = {}
+    queue = []
+    pointer = 0
+
+    queue.push("Bacon, Kevin")
+    visited[queue[pointer]] = true
+    distances[queue[pointer]] = 0
+
+    while pointer < queue.length
+      # look at the current node or first node in queue
+      current_node = queue[pointer]
+      if @movies[entity] && @actors[current_node].movies[entity]
+        return "bacon number: #{distances[current_node]}"
+      end
+      if @actors[entity] && current_node == entity
+        return "bacon number: #{distances[current_node]}"
+      end
+      current_costars = grab_costars(current_node).keys
+      current_costars.each do |actor|
+        if !visited.key?(actor)
+          queue.push(actor)
+          visited[actor] = true
+          distances[actor] = distances[current_node] + 1
+        end
+      end
+      pointer += 1
+    end
+    return "INF" 
+  end
+
+  def grab_costars(actor_title)
+    costars = {}
+    credited_movies = @actors[actor_title].movies #hash of credited movies
+    #iteration through credited movies to grab costars
+    if @epoch_on
+      credited_movies.each do |movie_title, value| 
+      #only grab the costars and add them to costars hash - merge should overwrite costar already inside
+        if @movies[movie_title] #check for epoch filter
+          temp = @temp_movie_store[movie_title].actors.select { |name,value| name != actor_title }
+          costars.merge!(temp)
+        end
+      end
+    else
+      credited_movies.each do |movie_title, value| 
+      #only grab the costars and add them to costars hash - merge should overwrite costar already inside
+        temp = @movies[movie_title].actors.select { |name,value| name != actor_title }
+        costars.merge!(temp)
+      end
+    end 
+    costars
   end
 
 

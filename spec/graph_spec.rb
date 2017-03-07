@@ -4,48 +4,6 @@ require_relative '../movie_node'
 require_relative '../year_node'
 require_relative '../graph'
 
-# Tests for count function (make below pass)
-# It returns the actor count for a movie
-# p graph.count("...Almost")
-# it returns the movie count for the actor 
-# p graph.count("Ferrell, Will")
-# it returns NULL if actor doesn't exist
-# it returns NULL if actor doesn't exist
-# p graph.count("Washington, Denzel")
-# it returns the epoch count for both movies and movies
-# p graph.count("Austin Powers: The Spy Who Shagged Me")
-# graph.set_epoch("1997","1999")
-# graph.epoch_on
-# p graph.count("Austin Powers: The Spy Who Shagged Me")
-# p graph.count("Myers, Mike")
-
-# Tests for intersection function (make below pass)
-#it finds the intersections between 2 actors
-# p graph.intersect("Myers, Mike","Green, Seth")
-
-#it finds the intersections between 2 movies
-# p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
-
-#it returns NULL when no intersections  
-# p graph.intersect("Green, Seth", "Giron, Ali")
-
-#it returns error explaination when not both actors or both movies
-# p graph.intersect("Green, Seth", "Cry in the Night, A")
-
-#it returns the epoch intersections for actors and movies
-# p graph.epoch_on
-# p graph.intersect("Myers, Mike","Green, Seth")
-# graph.set_epoch("1997","1998")
-# p graph.epoch_on
-# p graph.intersect("Myers, Mike","Green, Seth")
-# graph.unset_epoch
-# p graph.epoch_on
-# p graph.intersect("Myers, Mike","Green, Seth")
-# graph.set_epoch("1997","1998")
-# p graph.epoch_on
-# p graph.intersect("Myers, Mike","Green, Seth")
-
-
 RSpec.describe GraphDB do
 
   before(:each) do

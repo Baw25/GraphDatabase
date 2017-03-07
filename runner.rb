@@ -6,18 +6,20 @@ puts "#" * 50
 puts " " * 10 + "Welcome to the GraphDB CLI"
 puts "#" * 50 
 
+puts "Data is loading ..."
 #Seed the database
 graph = GraphDB.new
 
-CSV.foreach('test_data.csv', { :col_sep => '/' }) do |row| 
+CSV.foreach('total_data.csv', { :col_sep => '/' }) do |row| 
   movie_title = row[0].split("(")[0].strip
   year = row[0][/(?:(?:19|20)[0-9]{2})/]
   actors = row[1..row.length]
   graph.add_movie_data(movie_title,year,actors)
 end
 
-#Interactive Command Line Program 
-#Directions
+
+# Interactive Command Line Program 
+# Directions
 puts """ \n
   The IMDB movie data is now loaded.\n
   \n
@@ -35,10 +37,6 @@ puts """ \n
   - Enter actors lastname, firstname format ex: \"Myers, Mike\"
   \n
 """
-#Loop program until END command
-# p graph.intersect("Myers, Mike", "Green, Seth")
-# graph.set_epoch(1997,1998)
-# p graph.intersect("Myers, Mike", "Green, Seth")
 
 loop do 
   puts "Enter Command\n"
@@ -84,10 +82,4 @@ loop do
   end 
 
 end 
-
-
-
-
-
-
 

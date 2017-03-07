@@ -40,7 +40,7 @@
   
   4. run tests 
   
-    'bundle exec rspec spec -fd spec/graph_spec.rb`
+    `bundle exec rspec spec -fd spec/graph_spec.rb`
   
   ##Writeup 
   

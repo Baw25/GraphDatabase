@@ -36,10 +36,10 @@ end
 
 # # Tests for intersection function (make below pass)
 # #it finds the intersections between 2 actors
-p graph.intersect("Myers, Mike","Green, Seth")
+# p graph.intersect("Myers, Mike","Green, Seth")
 
 # #it finds the intersections between 2 movies
-p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
+# p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")
 
 # #it returns NULL when no intersections  
 # # p graph.intersect("Green, Seth", "Giron, Ali")
@@ -95,13 +95,13 @@ p graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: Intern
 # Perform a BFS from the starting node.
 
 
-distances = {}
-def get_bacon(entity)
+def bacon(entity, graph)
   #base cases
   if entity == "Bacon, Kevin" 
     return "Bacon number: 0"
   end
-  if @movies[entity].actors["Bacon, Kevin"]
+ #@movies goes here
+  if graph.movies[entity].actors["Bacon, Kevin"]
     return "Bacon number: 0"
   end
   #movie and actor calculations
@@ -127,36 +127,70 @@ end
 # Add the neighbor to the queue
 # Return the distance of ‘end’ vertex
 
-def calculate_movie_bacon(movie_title)
-  distances = {}
-  visited = {}
-  queue = []
-  result = []
-  movie_keys = @movies[movie_title].actors.keys
-  queue.push(@movies[movie_keys[0]])
-  visited[movie_keys[0]] = true 
-  pointer = 0
-
-  while pointer < queue.length
-    current_node = queue[pointer]
-    current_node.edges.each do |edge, value|
-      if !traveled.key?(edge)
-        queue.push(@vertices[edge])
-        traveled[edge] = true
-      end
-    end
-    result.push(current_node.value)
-    pointer += 1
-  end
-
-  return result
-end
-
-def calculate_actor_bacon(actor)
-
-end
+#steps: 
+# - start with the movies of Kevin bacon 
+# - check if searched movie is in Kevin Bacon movies if so return 0 
+# this is completed in the first part of the bacon method 
+# - else, collect all his movie keys to access using the graph movies attribute 
+# - push each movie in the queue 
+# - when in the queue, check each actor\'s' movies hash for the target movie
+# - if it exists, return the the distance (in this case 1)
+# - if not found, add the each movie to the visited [movie: distance]
+# - also enqueue the queue with each movie key and repeat the process by 
+#   checking the actors movies in each movie for the target movie
+# - repeat this process until the target movie is found or each movie has been 
+#   added to the visited hash 
+# - then access the hash for the movie and return the distance value 
 
 
+# def calculate_movie_bacon(movie_title)
+#   visited = {}
+#   distances = {}
+#   queue = []
+#   pointer = 0
+#   queue.push("Bacon, Kevin")
+#   visited[queue[pointer]] = true
+#   distances[queue[pointer]] = 0
+#   while pointer < queue.length
+#     # look at the current node or first node in queue
+#     current_node = queue[pointer]
+#     if current_node.movies[movie_title]
+#       result = distances[current_node]
+#       break
+#     end
+#     current_costars = current_node.grab_costars.keys
+#     current_costars.each do |actor|
+#       if !visited.key?(actor)
+#         queue.push(actor)
+#         visited[actor] = true
+#         distances[actor] = distances[current_node] + 1
+#       end
+#     end
+#     pointer += 1
+#   end
+
+#   return result
+# end
+
+# # def calculate_actor_bacon(actor)
+
+# # end
+
+# def grab_costars(actor_title)
+#   costars = {}
+#   credited_movies = @actors[actor_title].movies #hash of credited movies
+#   #iteration through credited movies to grab costars
+#   credited_movies.each do |movie_title, value| 
+#     #only grab the costars and add them to costars hash - merge should overwrite costar already inside
+#     temp = @movies[movie_title].actors.select { |name,value| name != actor_title }
+#     costars.merge!(temp)
+#   end 
+#   costars
+# end
+
+# p bacon("Bacon, Kevin",graph)
+# p bacon("Balto", graph)
+# p bacon("Alice in Wonderland", graph)
 
 
 
