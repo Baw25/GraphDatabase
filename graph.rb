@@ -125,17 +125,17 @@ class GraphDB
   #if movie, return lowest bacon # of all actors or 
   #INF if all actors in the film have INF
 
-  def bacon(entity)
-    if @movies[entity]
-      # return calculate_bacon(entity,"movies")
-      return @movies[entity].bacon_num
-    elsif @actors[entity]
-      # return calculate_bacon(entity,"actors")
-      return @actors[entity].bacon_num
-    else
-      return "ERROR: INVALID INPUT"
-    end
-  end 
+  # def bacon(entity)
+  #   if @movies[entity]
+  #     # return calculate_bacon(entity,"movies")
+  #     return @movies[entity].bacon_num
+  #   elsif @actors[entity]
+  #     # return calculate_bacon(entity,"actors")
+  #     return @actors[entity].bacon_num
+  #   else
+  #     return "ERROR: INVALID INPUT"
+  #   end
+  # end 
 
 
   #filter for movie years including start and end years
@@ -195,19 +195,6 @@ class GraphDB
     puts intersections.length > 0 ? intersections : "NULL" 
     return intersections.length > 0 ? intersections : "NULL" 
   end
-
-  # def calculate_bacon(entity,entity_type)
-  #   if entity_type == "movies"
-
-  #   else
-  #     if @actors[entity].title == "Bacon, Kevin"
-  #       @actors[entity].bacon_num = 0
-  #     elsif 
-  #       @actors
-
-        
-  #   end
-  # end
 
 
 end
