@@ -16,7 +16,6 @@ class ActorNode
     @title = title 
     @movies = {} #Edges with movie nodes or actor's movies
     @movie_count = 0 #movie count
-    @costars = {} #movie key : actors array 
     @bacon_num = "INF" #Associated bacon number
   end 
 

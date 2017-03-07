@@ -70,12 +70,6 @@ RSpec.describe GraphDB do
         expect(@actor_1.movies["Austin Powers: International Man of Mystery"]).to eq "Austin Powers: International Man of Mystery"
       end
 
-      #rewrite test for this
-      it 'has one or more costar edges' do
-        #only return edges of two actors
-        expect(@actor_1.movies["Austin Powers: International Man of Mystery"]).to eq nil
-      end
-
       it 'has a movie count (from data set)' do
          expect(@actor_1.movie_count).to eq 2
       end
@@ -100,7 +94,7 @@ RSpec.describe GraphDB do
       it 'has a movie count' do
         #only movie count for test data
         expect(@year_1.movie_count).to eq 1
-        expect(@year_3.movie_count).to eq 1
+        expect(@year_3.movie_count).to eq 2
       end
 
     end
@@ -130,11 +124,11 @@ RSpec.describe GraphDB do
 
       #investigate why this is not 7 
       it 'has a unique movie node count' do 
-        expect(@graph.movie_count).to eq 6
+        expect(@graph.movie_count).to eq 7
       end
 
       it 'has a unique actor node count' do 
-        expect(@graph.actor_count).to eq 232
+        expect(@graph.actor_count).to eq 279
       end
 
       it 'has a initial epoch filtering off (false)' do 
@@ -210,6 +204,19 @@ RSpec.describe GraphDB do
         @graph.set_epoch("1997","1998")
         expect(@graph.intersect("Myers, Mike", "Green, Seth")).to match_array(["Austin Powers: International Man of Mystery"])
         expect(@graph.intersect("Austin Powers: The Spy Who Shagged Me","Austin Powers: International Man of Mystery")).to eq "ERROR: BOTH ENTITIES MUST BE MOVIES OR ACTORS, OR ATLEAST 1 ENTITY DOESN'T EXIST"
+      end
+
+      it "returns bacon number for Bacon starred movies and Kevin Bacon" do
+        expect(@graph.bacon("Bacon, Kevin")).to eq "Bacon number: 0"
+        expect(@graph.bacon("Balto")).to eq "Bacon number: 0"
+      end
+
+      it "returns bacon number for non Kevin Bacon movies" do
+        expect(@graph.bacon("Alice In Wonderland")).to eq "INF"
+      end
+
+      it "returns bacon number for non Kevin Bacon actors" do
+        expect(@graph.bacon("Wilder, Gene")).to eq "Bacon number: 2"
       end
 
       #operations methods 

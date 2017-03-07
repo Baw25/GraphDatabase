@@ -132,10 +132,14 @@ class GraphDB
     end
 
     if !@epoch_on
+      if @actors[entity] 
+        return calculate_bacon(entity)
+      end
       if @movies[entity] && @movies[entity].actors["Bacon, Kevin"]
         return "Bacon number: 0"
+      else 
+        return calculate_bacon(entity)
       end
-      return calculate_bacon(entity)
     else 
       if !@movies[entity] && !@actors[entity]
         return "Movie doesn't exist in year range" 
@@ -145,7 +149,6 @@ class GraphDB
         return calculate_bacon(entity)
       end
     end
-
   end
 
   #filter for movie years including start and end years
@@ -206,6 +209,7 @@ class GraphDB
     return intersections.length > 0 ? intersections : "NULL" 
   end
 
+  #BFS across actor costars
   def calculate_bacon(entity)
     visited = {}
     distances = {}
@@ -219,11 +223,13 @@ class GraphDB
     while pointer < queue.length
       # look at the current node or first node in queue
       current_node = queue[pointer]
-      if @movies[entity] && @actors[current_node].movies[entity]
-        return "bacon number: #{distances[current_node]}"
+      if @movies.key?(entity) 
+        if @actors[current_node].movies[entity]
+          return "Bacon number: #{distances[current_node]}"
+        end 
       end
-      if @actors[entity] && current_node == entity
-        return "bacon number: #{distances[current_node]}"
+      if @actors.key?(entity) && current_node == entity
+        return "Bacon number: #{distances[current_node]}"
       end
       current_costars = grab_costars(current_node).keys
       current_costars.each do |actor|
@@ -259,7 +265,6 @@ class GraphDB
     end 
     costars
   end
-
 
 end
 
