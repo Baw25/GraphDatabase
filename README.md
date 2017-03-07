@@ -1,11 +1,17 @@
 # GraphDatabase
 
-##Directions
+##Assignment
   In this challenge you will spend one to two hours building a simple graph database on top of a sample of
   IMDB feature films and actor credits. Your program will include a command-line client that receives
   commands via standard-in and prints responses through standard-out
   
   Include: COUNT, INTERSECT, SET EPOCH, UNSET EPOCH, BACON NUMBER, END commands
+
+##Tech Used
+
+  1. Ruby 
+
+  2. Rspec 
   
 ##Directions
   1. Clone this repo locally 
