@@ -22,11 +22,15 @@
     
     Use the following commands: 
     
-    `COUNT <movie> or <actor> 
-     INTERSECT <movie1> <movie2> or <actor1> <actor2> 
-     BACON <movie> or <actor> 
-     SET EPOCH <year1> <year2> 
-     UNSET EPOCH `
+    `COUNT <movie> or <actor>`
+    
+    `INTERSECT <movie1> <movie2> or <actor1> <actor2>`
+    
+    `BACON <movie> or <actor>`
+    
+    `SET EPOCH <year1> <year2>`
+    
+    `UNSET EPOCH`
   
   4. run tests 
   
